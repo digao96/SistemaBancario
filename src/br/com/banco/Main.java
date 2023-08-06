@@ -22,6 +22,8 @@ public class Main {
 		int idB = 0;
 		int idC = 0;
 		
+		ContaFactoryProduct contaFactory = null;
+		
 		do {
 			int opcao = Integer.parseInt(JOptionPane.showInputDialog(null, menu, "Banco IFRS / Campus Restinga", JOptionPane.QUESTION_MESSAGE));
 
@@ -56,22 +58,17 @@ public class Main {
 							.showInputDialog("Deseja Cadastrar qual Conta?\n[1] Conta Poupan�a\n[2] Conta Corrente"));
 
 					if (x == 1) {
-						ContaPoupanca contaP = new ContaPoupanca(null, null, 0, 0, null);
-						cadastrarConta(contaP, BankList, PeopleList, idP, idB);
-						contaP = new ContaPoupanca(contaP.getTitular(), contaP.getBanco(), contaP.getNroConta(),
-								contaP.getSaldo(), contaP.getSenha());
-						AccountList.add(contaP);
-						JOptionPane.showMessageDialog(null, "Conta Poupan�a Adcionada");
+						contaFactory = new ContaPoupancaFactoryProduct();
 					}
 
-					if (x == 2) {
-						ContaCorrente contaC = new ContaCorrente(null, null, 0, 0, null);
-						cadastrarConta(contaC, BankList, PeopleList, idP, idB);
-						contaC = new ContaCorrente(contaC.getTitular(), contaC.getBanco(), contaC.getNroConta(),
-								contaC.getSaldo(), contaC.getSenha());
-						AccountList.add(contaC);
-						JOptionPane.showMessageDialog(null, "Conta Corrente Adcionada");
+					else if (x == 2) {
+						contaFactory = new ContaCorrenteFactoryProduct();
 					}
+                    if (contaFactory != null) {
+                        ContaBancaria conta = cadastrarConta(contaFactory, BankList, PeopleList, idP, idB);
+                        AccountList.add(conta);
+                        JOptionPane.showMessageDialog(null, "Conta Adicionada");
+                    }
 				}
 				break;
 				
@@ -167,40 +164,20 @@ public class Main {
 		cadastraPessoa.setIdade(Integer.parseInt(JOptionPane.showInputDialog("Idade: ")));
 		cadastraPessoa.setCpf(JOptionPane.showInputDialog("CPF: "));
 	}
+	
+    static ContaBancaria cadastrarConta(ContaFactoryProduct contaFactory, ArrayList<Banco> BankList,
+            ArrayList<Pessoa> PeopleList, int idP, int idB) {
+        // Listando as Pessoas e Selecionando e guardando a info na variavel = ID PESSOA
+        // ... (resto del código de la función)
 
-	static void cadastrarConta(ContaBancaria conta, ArrayList<Banco> BankList, ArrayList<Pessoa> PeopleList, int idP,
-			int idB) {
-		// Listando as Pessoas e Selecionando e guardando a info na variavel = ID PESSOA
-		int i = 0;
-		StringBuffer listaPessoa = new StringBuffer();
-		for (Pessoa lista : PeopleList) {
-			listaPessoa.append("[" + i + "] " + lista.Nome + " " + lista.Sobrenome + "\n");
-			i++;
-		}
-		idP = Integer.parseInt(JOptionPane.showInputDialog(null, listaPessoa, "Deseja criar a conta de qual cliente?",
-				JOptionPane.PLAIN_MESSAGE));
-		conta.setTitular(PeopleList.get(idP));
+        // Informa��es Adcionais
+        int nroConta = Integer.parseInt(JOptionPane.showInputDialog("N�mero da Conta: "));
+        double saldo = Integer.parseInt(JOptionPane.showInputDialog("Saldo na Conta: "));
+        String senha = JOptionPane.showInputDialog("Senha da Conta: ");
+        
+        return contaFactory.criarConta(PeopleList.get(idP), BankList.get(idB), nroConta, saldo, senha);
+    }
 
-		// Listando os Banco e Selecionando e guardando a info na variavel = ID BANCO
-		i = 0;
-		StringBuffer listarBanco = new StringBuffer();
-		for (Banco lista : BankList) {
-			listarBanco.append("[" + i + "] " + lista.getNome());
-			listarBanco.append("\n");
-			i++;
-		}
-		idB = Integer.parseInt(JOptionPane.showInputDialog(null, listarBanco,
-				"Qual o Banco do Cliente " + PeopleList.get(idP).Nome + " ? ", JOptionPane.PLAIN_MESSAGE));
-		conta.setBanco(BankList.get(idB));
-
-		// Informa��es Adcionais
-		int nroConta = Integer.parseInt(JOptionPane.showInputDialog("N�mero da Conta: "));
-		double saldo = Integer.parseInt(JOptionPane.showInputDialog("Saldo na Conta: "));
-		String senha = JOptionPane.showInputDialog("Senha da Conta: ");
-		conta.setNroConta(nroConta);
-		conta.setSaldo(saldo);
-		conta.setSenha(senha);
-	}
 	
 	static void metodoInstanceof (ArrayList<ContaBancaria> AccountList, int x, StringBuffer buffer) {
 		if (AccountList.get(x) instanceof ContaPoupanca) {
