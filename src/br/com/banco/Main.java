@@ -77,6 +77,7 @@ public class Main {
 				
 			// LISTANDO TODAS  CONTAS
 			case 4:
+				/*
 				StringBuffer listaConta = new StringBuffer();
 				if (AccountList.isEmpty() == true) {
 					JOptionPane.showMessageDialog(null, "N�o h� nenhuma conta cadastrada!");
@@ -87,7 +88,29 @@ public class Main {
 					}
 				}
 				JOptionPane.showMessageDialog(null, listaConta, "Contas Cadastradas", JOptionPane.PLAIN_MESSAGE);
+				*/
+				
+				StringBuffer listaConta = new StringBuffer();
+				ContaBancariaIterator iterator = new ContaBancariaIterator(AccountList);
+
+				while (iterator.hasNext()) {
+				    ContaBancaria account = iterator.next();
+				    if (account instanceof ContaPoupanca) {
+				        ContaPoupanca contaP = (ContaPoupanca) account;
+				        listaConta.append("[Conta Poupança]");
+				        contaP.info(listaConta);
+				    } else if (account instanceof ContaCorrente) {
+				        ContaCorrente contaC = (ContaCorrente) account;
+				        listaConta.append("[Conta Corrente]");
+				        contaC.info(listaConta);
+				    }
+				    listaConta.append("___________________________\n");
+				}
+
+				JOptionPane.showMessageDialog(null, listaConta, "Contas Cadastradas", JOptionPane.PLAIN_MESSAGE);
+				
 				break;
+				
 				
 			// LOGIN PARA ENTRAR NA CONTA
 			case 5:
