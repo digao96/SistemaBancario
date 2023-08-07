@@ -58,11 +58,39 @@ public class Main {
 							.showInputDialog("Deseja Cadastrar qual Conta?\n[1] Conta Poupan�a\n[2] Conta Corrente"));
 
 					if (x == 1) {
+<<<<<<< Updated upstream
 						contaFactory = new ContaPoupancaFactoryProduct();
 					}
 
 					else if (x == 2) {
 						contaFactory = new ContaCorrenteFactoryProduct();
+=======
+					    ContaPoupanca contaP = new ContaPoupanca(null, null, 0, 0, null);
+					    cadastrarConta(contaP, BankList, PeopleList, idP, idB);
+					    contaP = new ContaPoupanca(contaP.getTitular(), contaP.getBanco(), contaP.getNroConta(),
+					            contaP.getSaldo(), contaP.getSenha());
+					    
+					    // Aplicar el decorador de transacciones
+					    ContaDecorator contaDecorada = new ContaDecoratorTransacoes(contaP);
+					    AccountList.add(contaDecorada);
+					    
+					    JOptionPane.showMessageDialog(null, "Conta Poupança Adicionada");
+					}
+
+					if (x == 2) {
+					    ContaCorrente contaC = new ContaCorrente(null, null, 0, 0, null);
+					    cadastrarConta(contaC, BankList, PeopleList, idP, idB);
+					    contaC = new ContaCorrente(contaC.getTitular(), contaC.getBanco(), contaC.getNroConta(),
+					            contaC.getSaldo(), contaC.getSenha());
+					    
+					    // Aplicar el decorador de transacciones y de intereses
+					    ContaDecorator contaDecorada = new ContaDecoratorTransacoes(contaC);
+					    contaDecorada = new ContaDecoratorIntereses(contaDecorada, 0.02); // 2% de intereses
+					    
+					    AccountList.add(contaDecorada);
+					    
+					    JOptionPane.showMessageDialog(null, "Conta Corrente Adicionada");
+>>>>>>> Stashed changes
 					}
                     if (contaFactory != null) {
                         ContaBancaria conta = cadastrarConta(contaFactory, BankList, PeopleList, idP, idB);
@@ -109,21 +137,25 @@ public class Main {
 					// VERIFICANDO SENHA PARA ENTRAR NO PAINEL DE CONTROLE DA CONTA!
 					if (contaBancaria.verificaSenha(senha) == true) {
 						do {
-							StringBuffer painelConta = new StringBuffer();
-							metodoInstanceof(AccountList, idC, painelConta);
-							painelConta.append("___________________________");
-							painelConta.append("\n[1] Sacar");
-							painelConta.append("\n[2] Depositar");
-							painelConta.append("\n[3] Novo M�s");
-							painelConta.append("\n[0] Sair da Conta");
 							
-						int opcaoPainelConta = Integer.parseInt(
-								JOptionPane.showInputDialog(null, painelConta, "Painel de Controle - Conta "+contaBancaria.NroConta, JOptionPane.PLAIN_MESSAGE));
-							opcaoConta(opcaoPainelConta, contaBancaria, controle);	
-							if (opcaoPainelConta == 0) {
-								controle = false;
-								break;
-							}
+					        StringBuffer painelConta = new StringBuffer();
+					        metodoInstanceof(AccountList, idC, painelConta);
+					        painelConta.append("___________________________");
+					        painelConta.append("\n[1] Sacar");
+					        painelConta.append("\n[2] Depositar");
+					        painelConta.append("\n[3] Novo Mês");
+					        painelConta.append("\n[0] Sair da Conta");
+
+					        int opcaoPainelConta = Integer.parseInt(
+					            JOptionPane.showInputDialog(null, painelConta, "Painel de Controle - Conta " + contaBancaria.getNroConta(), JOptionPane.PLAIN_MESSAGE));
+					            
+					        // Utilizar el método realizarOperacao() de la instancia decorada
+					        contaBancaria.realizarOperacao(opcaoPainelConta);
+
+					        if (opcaoPainelConta == 0) {
+					            controle = false;
+					            break;
+					        }
 							
 						} while (controle = true);
 					}
@@ -131,7 +163,6 @@ public class Main {
 								JOptionPane.showMessageDialog(null, "Senha Incorreta!");
 								break;
 							}
-				
 				}
 					break;
 			
